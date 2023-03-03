@@ -42,7 +42,7 @@ export class CalendarViewComponent implements OnInit {
     } else {
       this.currentDate.month += 1;
     }
-    this.updateMonthDisplay
+    this.updateMonthDisplay();
   }
   prevMonth() {
     if (this.currentDate.month === 1) {

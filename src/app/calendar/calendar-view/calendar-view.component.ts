@@ -32,10 +32,7 @@ export class CalendarViewComponent implements OnInit {
   constructor(private calendarProvider: CalendarProviderService) {}
 
   ngOnInit(): void {
-    this.month = this.calendarProvider.getMonthData(
-      this.currentDate.month,
-      this.currentDate.year
-    );
+    this.updateMonthDisplay()
   }
 
   nextMonth() {
@@ -45,10 +42,7 @@ export class CalendarViewComponent implements OnInit {
     } else {
       this.currentDate.month += 1;
     }
-    this.month = this.calendarProvider.getMonthData(
-      this.currentDate.month,
-      this.currentDate.year
-    );
+    this.updateMonthDisplay
   }
   prevMonth() {
     if (this.currentDate.month === 1) {
@@ -57,10 +51,7 @@ export class CalendarViewComponent implements OnInit {
     } else {
       this.currentDate.month -= 1;
     }
-    this.month = this.calendarProvider.getMonthData(
-      this.currentDate.month,
-      this.currentDate.year
-    );
+    this.updateMonthDisplay()
   }
 
   getTitle() {
@@ -88,14 +79,15 @@ export class CalendarViewComponent implements OnInit {
 
   findDate() {
     this.currentDate = { ...this.searchDate };
-    this.month = this.calendarProvider.getMonthData(
-      this.currentDate.month,
-      this.currentDate.year
-    );
+    this.updateMonthDisplay()
   }
 
   showToday() {
     this.currentDate = { ...this.today };
+    this.updateMonthDisplay();
+  }
+
+  updateMonthDisplay(){
     this.month = this.calendarProvider.getMonthData(
       this.currentDate.month,
       this.currentDate.year

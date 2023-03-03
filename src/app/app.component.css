@@ -1,0 +1,8 @@
+.header{
+    border: 1px solid silver;
+    color: darkgoldenrod;
+    letter-spacing: 5px;
+    text-align: center;
+    padding: 10px 0;
+    margin: 5px 0;
+}

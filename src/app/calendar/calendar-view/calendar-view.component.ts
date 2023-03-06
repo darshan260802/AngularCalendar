@@ -9,30 +9,29 @@ import type { DateObj } from '../calendar-provider.service';
 })
 export class CalendarViewComponent implements OnInit {
   date = new Date();
-  today: DateObj = {
-    day: this.date.getDate(),
-    month: this.date.getMonth() + 1,
-    year: this.date.getFullYear(),
-  };
+  yearsSpan = Array(101)
+    .fill(1)
+    .map((elem: number, index: number) => 1970 + index);
+  monthSpan = Array(12)
+    .fill(1)
+    .map((elem: number, index: number) => 1 + index);
+  CPS: CalendarProviderService;
 
-  currentDate: DateObj = {
-    day: this.date.getDate(),
-    month: this.date.getMonth() + 1,
-    year: this.date.getFullYear(),
-  };
-
-  searchDate: DateObj = {
-    day: this.date.getDate(),
-    month: this.date.getMonth() + 1,
-    year: this.date.getFullYear(),
-  };
+  currentDate: DateObj;
+  searchDate: DateObj;
+  highlightDate: DateObj;
 
   month!: number[][];
 
-  constructor(private calendarProvider: CalendarProviderService) {}
+  constructor(private calendarProvider: CalendarProviderService) {
+    this.CPS = calendarProvider;
+    this.currentDate = { ...calendarProvider.getToday() };
+    this.searchDate = { ...calendarProvider.getToday(), day: 0 };
+    this.highlightDate = { ...calendarProvider.getToday() };
+  }
 
   ngOnInit(): void {
-    this.updateMonthDisplay()
+    this.updateMonthDisplay();
   }
 
   nextMonth() {
@@ -42,6 +41,8 @@ export class CalendarViewComponent implements OnInit {
     } else {
       this.currentDate.month += 1;
     }
+    console.log(this.CPS.getToday());
+
     this.updateMonthDisplay();
   }
   prevMonth() {
@@ -51,43 +52,58 @@ export class CalendarViewComponent implements OnInit {
     } else {
       this.currentDate.month -= 1;
     }
-    this.updateMonthDisplay()
+    this.updateMonthDisplay();
   }
 
   getTitle() {
     return (
       this.calendarProvider.getMonthName(this.currentDate.month) +
-      ' ' +
+      ' - ' +
       this.currentDate.year
     );
   }
 
-  isContainToday(): boolean {
+  doHighlight(day: number): boolean {
     if (
-      this.today.month === this.currentDate.month &&
-      this.today.year === this.currentDate.year
+      this.highlightDate.month === this.currentDate.month &&
+      this.highlightDate.year === this.currentDate.year &&
+      this.highlightDate.day === day
     ) {
       return true;
     }
     return false;
   }
 
-  updateCurrent(key: 'day' | 'month' | 'year', value: string) {
+  updateSearch(key: 'day' | 'month' | 'year', value: string) {
     if (!value) return;
     this.searchDate[key] = Number(value);
   }
 
   findDate() {
-    this.currentDate = { ...this.searchDate };
-    this.updateMonthDisplay()
-  }
+    this.currentDate = {
+      ...this.searchDate,
+      day: this.searchDate.day
+        ? this.searchDate.day
+        : this.currentDate.day,
+    };
+    if (this.searchDate.day) {
+      this.highlightDate = {
+        ...this.searchDate
+      };
+    }else{
+      this.highlightDate = {...this.calendarProvider.getToday()};
+    }
 
-  showToday() {
-    this.currentDate = { ...this.today };
     this.updateMonthDisplay();
   }
 
-  updateMonthDisplay(){
+  showToday() {
+    this.currentDate = { ...this.CPS.getToday() };
+    this.highlightDate = { ...this.CPS.getToday() };
+    this.updateMonthDisplay();
+  }
+
+  updateMonthDisplay() {
     this.month = this.calendarProvider.getMonthData(
       this.currentDate.month,
       this.currentDate.year

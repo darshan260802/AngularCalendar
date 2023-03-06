@@ -1,8 +1,8 @@
 <header>
   <div class="container-calendar-title">
-    <button (click)="prevMonth()"> < </button>
+    <button (click)="prevMonth()"><</button>
     <h2>{{ getTitle() | uppercase }}</h2>
-    <button (click)="nextMonth()"> > </button>
+    <button (click)="nextMonth()">></button>
   </div>
 </header>
 
@@ -24,7 +24,7 @@
         <tr *ngFor="let week of month">
           <td
             *ngFor="let day of week"
-            [class.today]="isContainToday() && day === today.day"
+            [class.highlight]="doHighlight(day)"
           >
             {{ day === 0 ? "" : day }}
           </td>
@@ -35,60 +35,47 @@
 </section>
 
 <footer>
-    <div class="container-actions">
-        <button (click)="showToday()" >Today</button>
-        <select name="year" id="selYear" disabled  (change)="updateCurrent('year', year.value)" #year>
-            <option value="2023">2023</option>
-        </select>
-        <select name="month" disabled id="selMonth" (change)="updateCurrent('month', monthSel.value)" #monthSel>
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
+  <div class="container-actions">
+    <button (click)="showToday()">Today</button>
+    <select
+      name="year"
+      id="selYear"
+      #yearSel
+      (change)="updateSearch('year', yearSel.value)"
 
-        </select>
-        <select name="date" disabled (change)="updateCurrent('day', date.value)" #date id="selDate">
-            <option value="0">Date</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29" *ngIf="" >29</option>
-            <option value="30" *ngIf="" >30</option>
-            <option value="31">31</option>
-        </select>
-        <button (click)="findDate()" disabled>Find Date</button>
-    </div>
+    >
+      <option
+        *ngFor="let year of yearsSpan"
+        [value]="year"
+        [selected]="CPS.getToday().year === year"
+      >
+        {{ year }}
+      </option>
+    </select>
+    <select
+      name="month"
+      id="selMonth"
+      #monthSel
+      (change)="updateSearch('month', monthSel.value)"
+
+    >
+      <option
+        *ngFor="let month of monthSpan"
+        [selected]="month === CPS.getToday().month"
+        [value]="month"
+      >
+        {{ CPS.getMonthName(month) }}
+      </option>
+    </select>
+    <select
+      name="date"
+      #dateSel
+      id="selDate"
+      (change)="updateSearch('day', dateSel.value)"
+    >
+      <option value="null">Date</option>
+      <option *ngFor="let day of CPS.getMonthDaysArray(searchDate.month, searchDate.year)" [value]="day">{{ day }}</option>
+    </select>
+    <button (click)="findDate()" >Find Date</button>
+  </div>
 </footer>

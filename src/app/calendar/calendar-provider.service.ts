@@ -10,18 +10,18 @@ export interface DateObj {
   providedIn: 'root',
 })
 export class CalendarProviderService {
-  current: DateObj;
+  today: DateObj;
+  init = new Date();
 
   constructor() {
-    const init = new Date();
-    this.current = {
-      day: init.getDate(),
-      month: init.getMonth() + 1,
-      year: init.getFullYear(),
+    this.today = {
+      day: this.init.getDate(),
+      month: this.init.getMonth() + 1,
+      year: this.init.getFullYear(),
     };
   }
 
-  getMonthData(month: number, year: number) {
+  getMonthData(month: number, year: number): number[][] {
     const data: number[][] = [];
     const days = new Date(year, month, 0).getDate();
     const startWeekDay = new Date(year, month - 1, 1).getDay();
@@ -42,7 +42,7 @@ export class CalendarProviderService {
     return data;
   }
 
-  getMonthName(month: number) {
+  getMonthName(month: number): string {
     const months = [
       'January',
       'February',
@@ -58,6 +58,18 @@ export class CalendarProviderService {
       'December',
     ];
 
-    return months[month-1];
+    return months[month - 1];
+  }
+
+  getMonthDaysArray(month: number | string, year: number | string): number[] {
+    const days = new Date(Number(year), Number(month), 0).getDate();
+
+    return Array(days)
+      .fill(1)
+      .map((elem: number, index: number) => 1 + index);
+  }
+
+  getToday(): DateObj {
+    return this.today;
   }
 }
